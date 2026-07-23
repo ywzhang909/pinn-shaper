@@ -12,7 +12,7 @@ The method supports both finite-distance and far-field beam shaping, including n
 |<img src="https://github.com/rafael-fuente/pinn-shaper/blob/main/images/star_flat_top_near_field_propagation.gif" width="100%">|<img src="https://github.com/rafael-fuente/pinn-shaper/blob/main/images/dt_letters_flat_top_near_field_propagation.gif" width="95%">|
 :--------------------:|:--------------------:|
 `Star-shaped flat-top (near field).ipynb` | `DT-letters-shaped flat-top (near field).ipynb` |
-[Link to the example](https://github.com/rafael-fuente/pinn-shaper/blob/main/Star-shaped%20flat-top%20(near%20field).ipynb)| [Link to the example](https://github.com/rafael-fuente/pinn-shaper/blob/main/DT-letters-shaped%20flat-top%20(far%20field)%20-%20with%20GS%20comparison.ipynb)|
+[Link to the example](https://github.com/rafael-fuente/pinn-shaper/blob/main/Star-shaped%20flat-top%20(near%20field).ipynb)| [Link to the example](https://github.com/rafael-fuente/pinn-shaper/blob/main/DT-letters-shaped%20flat-top%20(near%20field).ipynb)|
 
 
 
