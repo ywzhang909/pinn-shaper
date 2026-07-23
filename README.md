@@ -3,7 +3,7 @@
 
 ![N|Solid](images/setup.png)
 
-Pinn-shaper provides research code and example notebooks for designing high-fidelity and high-performance phase profiles that transform a known input beam into a prescribed target intensity.
+PINN-shaper provides research code and example notebooks for designing high-fidelity and high-performance phase profiles that transform a known input beam into a prescribed target intensity.
 
 Compared with Gerchberg--Saxton and direct gradient-based optimization methods, this work reformulates the beam-shaping problem as a nonlinear PDE, which is solved with a PINN whose solutions yield smoother phase profiles, improved robustness, reduced speckle, and greater power directed to the desired target region. It enforces the underlying beam-shaping physics throughout training, which helps guide the solution toward physically meaningful phase maps.
 
