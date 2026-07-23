@@ -4,9 +4,16 @@
 
 Pinn-shaper provides research code and example notebooks for designing high-fidelity and high-performance phase profiles that transform a known input beam into a prescribed target intensity.
 
-Compared with Gerchberg--Saxton and direct gradient-based optimization methods, the PINN produces smoother phase profiles with improved robustness, less speckle, and can direct more power into the desired target region. It enforces the underlying beam-shaping physics throughout training, which helps guide the solution toward physically meaningful phase maps.
+Compared with Gerchberg--Saxton and direct gradient-based optimization methods, this work reformulates the beam-shaping problem as a nonlinear PDE, which is solved with a PINN whose solutions yield smoother phase profiles, improved robustness, reduced speckle, and greater power directed to the desired target region. It enforces the underlying beam-shaping physics throughout training, which helps guide the solution toward physically meaningful phase maps.
 
-The method supports both finite-distance and far-field beam shaping, including non-paraxial configurations. The resulting phases can be displayed on spatial light modulators (SLMs) or used as starting points for metasurface inverse design and topology optimization. The PINN is specially simple to train for low-spatial-frequency target patterns.
+The method supports both finite-distance and far-field beam shaping, including non-paraxial configurations. The resulting phases can be displayed on spatial light modulators (SLMs) or used as optimal starting points for further metasurface inverse design and topology optimization. The PINN is specially simple to train for low-spatial-frequency target patterns.
+
+|<img src="https://github.com/rafael-fuente/pinn-shaper/blob/main/images/star_flat_top_near_field_propagation.gif" width="100%">|<img src="https://github.com/rafael-fuente/pinn-shaper/blob/main/images/dt_letters_flat_top_near_field_propagation.gif" width="95%">|
+:--------------------:|:--------------------:|
+`Star-shaped flat-top (near field).ipynb` | `DT-letters-shaped flat-top (near field).ipynb` |
+[Link to the example](https://github.com/rafael-fuente/pinn-shaper/blob/main/Star-shaped%20flat-top%20(near%20field).ipynb)| [Link to the example](https://github.com/rafael-fuente/pinn-shaper/blob/main/DT-letters-shaped%20flat-top%20(far%20field)%20-%20with%20GS%20comparison.ipynb)|
+
+
 
 ## Requirements
 
