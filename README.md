@@ -1,6 +1,6 @@
 # Physics-Informed Neural Networks for Optimal Beam Shaping in Flat Optics
 
-![N|Solid](/setup.png)
+![N|Solid](images/setup.png)
 
 Pinn-shaper provides research code and example notebooks for designing high-fidelity and high-performance phase profiles that transform a known input beam into a prescribed target intensity.
 
