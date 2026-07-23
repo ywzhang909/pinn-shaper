@@ -1,4 +1,5 @@
 # Physics-Informed Neural Networks for Optimal Beam Shaping in Flat Optics
+[![DOI](https://zenodo.org/badge/DOI/10.48550/arXiv.2607.18012.svg)](https://doi.org/10.48550/arXiv.2607.18012)
 
 ![N|Solid](images/setup.png)
 
@@ -16,6 +17,8 @@ The method supports both finite-distance and far-field beam shaping, including n
 
 
 ## Requirements
+
+For installation, just clone this repository. The required packages are:
 
 - `torch`
 - `diffractsim`
