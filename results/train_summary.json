@@ -1,0 +1,65 @@
+{
+  "total_s": 600.1,
+  "runs": {
+    "exp1": {
+      "ok": true,
+      "exit_code": 0,
+      "elapsed_s": 143.2,
+      "checkpoint_used": false,
+      "metrics": {
+        "rel_rms": 2.453
+      },
+      "log": "results/train_exp1.log"
+    },
+    "exp2": {
+      "ok": true,
+      "exit_code": 0,
+      "elapsed_s": 67.3,
+      "checkpoint_used": false,
+      "metrics": {
+        "rel_rms": 0.761
+      },
+      "log": "results/train_exp2.log"
+    },
+    "exp3": {
+      "ok": true,
+      "exit_code": 0,
+      "elapsed_s": 171.1,
+      "checkpoint_used": false,
+      "metrics": {
+        "rel_rms": 5.375
+      },
+      "log": "results/train_exp3.log"
+    },
+    "exp4": {
+      "ok": true,
+      "exit_code": 0,
+      "elapsed_s": 192.3,
+      "checkpoint_used": false,
+      "metrics": {
+        "mse_pinn": 4033485.0,
+        "rel_rms_pinn": 0.03147933,
+        "mse_gs": 208109700.0,
+        "rel_rms_gs": 0.2261161,
+        "eta_pinn": 99.963428,
+        "eta_gs": 95.898532
+      },
+      "log": "results/train_exp4.log"
+    },
+    "paper": {
+      "ok": true,
+      "exit_code": 0,
+      "elapsed_s": 26.2,
+      "checkpoint_used": false,
+      "metrics": {
+        "mse_pinn": 3590469.0,
+        "rel_rms_pinn": 0.0297003,
+        "mse_gs": 208109700.0,
+        "rel_rms_gs": 0.2261161,
+        "eta_pinn": 99.982228,
+        "eta_gs": 95.898532
+      },
+      "log": "results/train_paper.log"
+    }
+  }
+}

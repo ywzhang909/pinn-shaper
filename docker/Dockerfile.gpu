@@ -1,0 +1,43 @@
+# GPU image for pinn-shaper.
+#
+# Base: `ao-shaping-test:gpu` — the local AO-Shaping GPU test image
+# (python:3.13-slim + torch 2.14.1+cu130 + numpy/scipy/matplotlib/pillow).
+# CUDA userland is NOT baked in: nvidia-container-toolkit injects the driver
+# libraries at run time, so run the container with `--gpus all` (or `gpus: all`
+# in compose). No `nvidia/cuda` base image is required.
+#
+# This layer only adds what pinn-shaper needs beyond the base: diffractsim
+# (scalar-diffraction validation) and jax (its backend).
+#
+# Build:
+#   docker build -f docker/Dockerfile.gpu -t pinn-shaper:gpu .
+#
+# Run (see docker/docker-compose.gpu.yml):
+#   docker compose -f docker/docker-compose.gpu.yml up -d
+#   OXPY_CONTAINER=pybox-gpu oxpy train_all.py --device cuda --gpu 1
+#
+# If the base image is unavailable, swap the FROM line for any image that
+# provides torch with CUDA plus numpy/scipy/matplotlib/pillow, e.g.
+#   FROM pytorch/pytorch:2.5.1-cuda12.4-cudnn9-runtime
+FROM ao-shaping-test:gpu
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONNOUSERSITE=1 \
+    MPLBACKEND=Agg \
+    PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+
+# Direct PyPI is unreachable on the build host, so the mirror is a build arg.
+# Override on machines with normal access:
+#   docker build --build-arg PIP_INDEX_URL=https://pypi.org/simple ...
+ARG PIP_INDEX_URL=https://mirrors.cloud.tencent.com/pypi/simple
+
+RUN pip install --no-cache-dir -i "$PIP_INDEX_URL" \
+      diffractsim==2.2.13 \
+      "jax>=0.4.30"
+
+RUN python -c "import importlib.metadata as m, torch, diffractsim, jax, numpy, scipy, matplotlib, PIL; \
+print('torch', torch.__version__, '| diffractsim', m.version('diffractsim'), '| jax', jax.__version__)"
+
+WORKDIR /workspace
+
+CMD ["python", "-c", "import torch; print('pinn-shaper GPU image ready; torch CUDA build:', torch.version.cuda)"]

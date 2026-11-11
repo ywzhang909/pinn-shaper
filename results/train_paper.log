@@ -1,0 +1,11 @@
+Loaded official pretrained model: saved_models/DT_flat-top-farfield_model.pth
+An NVIDIA GPU may be present on this machine, but a CUDA-enabled jaxlib is not installed. Falling back to cpu.
+
+================= PAPER NUMBER CHECK (official pretrained model) =================
+  PINN: MSE = 3.590469e+06   RMS = 1.894853e+03   relative RMS = 2.970030e-02
+  GS:   MSE = 2.081097e+08   RMS = 1.442601e+04   relative RMS = 2.261161e-01
+  Paper: PINN MSE 3.59e6 (2.97%), GS MSE 2.08e8 (22.6%)
+  PINN efficiency: 99.982228%
+  GS efficiency:   95.898532%
+  Paper: PINN ~99.98%, GS ~95.90%
+Saved results/exp4_paper_check.png

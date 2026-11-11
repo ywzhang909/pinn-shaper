@@ -1,0 +1,51 @@
+# GPU counterpart of ~/sandbox-py's `pybox`.
+#
+# The container is resident (`sleep infinity`); work is exec'd into it, so it
+# works with the existing oxpy wrapper:
+#
+#   docker compose -f docker/docker-compose.gpu.yml up -d
+#   OXPY_CONTAINER=pybox-gpu oxpy train_all.py --device cuda --gpu 1
+#   docker compose -f docker/docker-compose.gpu.yml down
+#
+# Requires: NVIDIA driver + nvidia-container-toolkit (already present on this
+# host: toolkit 1.19.1, driver 580.178.04) and docker compose >= 2.30.
+services:
+  pybox-gpu:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.gpu
+    image: pinn-shaper:gpu
+    container_name: pybox-gpu
+    command: ["sleep", "infinity"]
+    restart: unless-stopped
+
+    # Match the host user so results/, reproduced_models/ and logs written
+    # through the bind mount stay owned by `ws` instead of root.
+    user: "1000:1000"
+
+    # `gpus: all` keeps both 4090s visible; pick one per run with
+    # `CUDA_VISIBLE_DEVICES` (train_all.py --gpu N). On older compose releases
+    # replace with:
+    #   deploy:
+    #     resources:
+    #       reservations:
+    #         devices: [{driver: nvidia, count: all, capabilities: [gpu]}]
+    gpus: all
+    shm_size: 2gb
+
+    # Same absolute paths as on the host, so script paths and /tmp scratch
+    # files resolve identically on both sides.
+    volumes:
+      - /home/ws:/home/ws
+      - /tmp:/tmp
+    working_dir: /home/ws
+
+    environment:
+      HOME: /home/ws
+      PYTHONUNBUFFERED: "1"
+      # Never pick up the host's ~/.local site-packages: that is where the
+      # CPU-only torch used by `pybox` lives, and it must not shadow the
+      # image's cu130 build.
+      PYTHONNOUSERSITE: "1"
+      MPLBACKEND: Agg
+      PYTORCH_CUDA_ALLOC_CONF: expandable_segments:True

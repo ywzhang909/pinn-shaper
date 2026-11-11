@@ -11,7 +11,8 @@
 > 本机环境：Ubuntu / 2× RTX 4090（训练时每卡仅剩约 5 GB 空闲显存，因此默认把
 > `integration_points` 从论文的 5000 降到 1500 也能收敛）/ Python 3.11 venv
 > (`/home/ws/pinn-venv`)、`torch 2.11.0+cu128`、`diffractsim 2.2.13`、`jax 0.11.1`。
-> 单卡训练每个实验约 3–5 分钟。
+> 单卡训练每个实验约 1–3 分钟；4 个实验 + 官方权重校验全流程实测 **10.0 分钟**
+> （GPU docker：exp1 143s / exp2 67s / exp3 171s / exp4 192s / paper 26s）。
 
 ---
 
@@ -196,6 +197,45 @@ pip install diffractsim jax scipy matplotlib pillow numpy
 `numpy`、`scipy`、`matplotlib`、`pillow`。`pinn_shaping()` 本身只依赖
 `torch` + `numpy`，不依赖 `diffractsim`，可以在纯 CPU 环境跑通接口级测试。
 
+### GPU Docker（推荐）
+
+仓内自带专用镜像与 compose 服务，无需在宿主机装 CUDA 版 PyTorch：
+
+```bash
+# 1) 构建镜像（基于本机 ao-shaping-test:gpu，额外装 diffractsim + jax）
+docker build -f docker/Dockerfile.gpu -t pinn-shaper:gpu .
+
+# 2) 启动常驻容器（gpus: all，挂载 /home/ws 与 /tmp，uid 1000）
+docker compose -f docker/docker-compose.gpu.yml up -d
+
+# 3) 验证 GPU 可见
+docker exec pybox-gpu python -c "import torch;print(torch.cuda.is_available(), torch.cuda.device_count())"
+
+# 4) 训练（--gpu 选择物理卡；容器内两张卡都可见）
+docker exec -w /home/ws/code/pinn-shaper pybox-gpu \
+  python train_all.py --device cuda --gpu 1
+
+# 也可以继续用 oxpy 包装器，只需切换目标容器
+OXPY_CONTAINER=pybox-gpu oxpy train_all.py --device cuda --gpu 1
+```
+
+`docker/Dockerfile.gpu` 用 `ao-shaping-test:gpu` 作为基镜像（提供 torch 2.14.1+cu130
+与科学计算栈），只补 `diffractsim==2.2.13` 和 `jax`；CUDA 驱动库由
+nvidia-container-toolkit 在运行时注入，不需要 `nvidia/cuda` 基镜像。换机器时把
+`FROM` 换成任意"带 CUDA 版 torch + numpy/scipy/matplotlib/pillow"的镜像即可。
+
+`docker/docker-compose.gpu.yml` 的 `pybox-gpu` 服务要点：
+
+- `gpus: all`：两张卡都暴露，训练时用 `--gpu N` 选卡（老版本 compose 可换成
+  `deploy.resources.reservations.devices`）；
+- `user: "1000:1000"`：`results/`、`reproduced_models/` 写出来仍归 `ws` 所有；
+- `PYTHONNOUSERSITE=1`：避免容器误用宿主机 `~/.local` 里的 CPU 版 torch；
+- `shm_size: 2gb`、`PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True`：减少共享内存与显存碎片问题。
+
+注意 `repro/exp*.py` 里有 `os.environ.setdefault("CUDA_VISIBLE_DEVICES","1")`。若只用
+`--gpus '"device=0"'` 暴露单卡，必须显式传 `-e CUDA_VISIBLE_DEVICES=0`，否则脚本会把
+可见设备号设成 1、CUDA 看不到任何卡而静默退回 CPU；用 `--gpus all` + `--gpu N` 最省心。
+
 ---
 
 ## 5. 仓库结构
@@ -212,6 +252,8 @@ reproduced_models/      本机从零训练得到的 4 个 .pth
 saved_models/           上游官方预训练权重（用于论文数值校验）
 results/                所有复现图 + 训练日志 + train_summary.json
 train_all.py            一键训练/评估脚本
+docker/Dockerfile.gpu   GPU 专用镜像（diffractsim + jax）
+docker/docker-compose.gpu.yml  pybox-gpu 服务（gpus: all + /home/ws 挂载）
 report.md               完整复现报告
 images/                 目标图案（star.png / DT.png）与示意图
 ```
