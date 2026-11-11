@@ -38,6 +38,32 @@ For a CUDA-enabled installation, install the appropriate PyTorch build for your 
 - Gerchberg--Saxton comparison for the far-field example.
 - Example trained models and target images for reproducing the supplied results.
 
+## Reproduction results
+
+This repository also ships a from-scratch reproduction of the four paper
+experiments (trained locally, not the supplied `saved_models/`), validated
+against the paper's metrics with `diffractsim` on a CPU backend. Full details
+and figures for every experiment are in [`report.md`](report.md).
+
+| Experiment | Task | Target plane | Metric |
+|---|---|---|---|
+| Exp1 | Star flat-top | near field, z = 10 cm | cross-section rel-RMS 2.45% |
+| Exp2 | Star flat-top | far field | cross-section rel-RMS 0.76% |
+| Exp3 | DT letters | near field (6 → 10 mm) | cross-section rel-RMS 5.38% |
+| Exp4 | DT letters + GS | far field | PINN MSE 4.03×10⁶ vs GS 2.08×10⁸ |
+
+The paper's headline comparison is reproduced: on the far-field DT-letters
+target, the PINN reaches MSE ≈ 4.0×10⁶ (paper 3.59×10⁶) versus Gerchberg–Saxton
+2.08×10⁸ (paper 2.08×10⁸, matched to the digit), i.e. a ~52× MSE improvement,
+with 99.96% (PINN) vs 95.90% (GS) target-area power efficiency. Using the
+supplied official model, the pipeline reproduces the paper numbers exactly
+(MSE 3.590469×10⁶, rel-RMS 2.97%, η 99.982% / 95.898%).
+
+Reproduction artifacts live in `repro/` (scripts, `--seed` / `--no-train`),
+`reproduced_models/` (four from-scratch `.pth`), `results/` (figures) and
+`report.md` (report). Training used the residual GPU memory of two RTX 4090s
+(~5 GB free per card); each experiment takes 3–5 minutes.
+
 ## Citation
 
 If you use `pinn-shaper` in your research, please cite the paper:
